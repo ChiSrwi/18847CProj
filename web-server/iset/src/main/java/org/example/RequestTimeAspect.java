@@ -5,6 +5,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 @Aspect
 @Component
 public class RequestTimeAspect {
@@ -19,6 +23,14 @@ public class RequestTimeAspect {
         long totalTime = endTime - startTime;
 
         System.out.println("Method execution time: " + totalTime + " milliseconds");
+
+        try (FileWriter fileWriter = new FileWriter("execution_time.log", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+            bufferedWriter.write("Method execution time: " + totalTime + " milliseconds");
+            bufferedWriter.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return proceed;
     }

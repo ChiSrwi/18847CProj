@@ -21,14 +21,24 @@ public class Main {
         return "Hello World!";
     }
 
-    @GetMapping("/add")
-    public String add(@RequestParam("a") int a, @RequestParam("b") int b) {
-        int sum = a + b;
-        for (int i=0; i<2000000; i++) {
-            sum ^= a+b;
-            sum *= 10;
+    @GetMapping("/find")
+    public String add(@RequestParam("a") int a) {
+        int cnt = 0;
+        for (int i=0; i<a; i++) {
+            int local_cnt = 0;
+            for (int j=0; j<32; j++) {
+                int mask = 1 << j;
+                if ((i & mask) != 0) {
+                    local_cnt ++;
+                }
+            }
+
+            if (local_cnt > 5) {
+                ++cnt;
+            }
         }
-        return "Result is " + sum;
+
+        return "Find count: " + String.valueOf(cnt);
     }
 
     @GetMapping("/encode")
@@ -50,11 +60,11 @@ public class Main {
 
             return "SHA-256 Result: " + hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            return "SHA-256 cannot be initialized！";
+            return "SHA-256 cannot be initialized!";
         }
     }
 
-    @GetMapping("col")
+    @GetMapping("/col")
     public String col() {
         int sz = 10000;
         long [][] res = new long[sz][sz];
